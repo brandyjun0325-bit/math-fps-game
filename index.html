@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Math FPS - Intelligent Shooting Game</title>
+    <style>
+      body { margin: 0; overflow: hidden; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+      #ui-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+      
+      #menu {
+        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.8); display: flex; flex-direction: column;
+        justify-content: center; align-items: center; pointer-events: auto;
+        color: white; z-index: 10;
+      }
+      #menu h1 { font-size: 3rem; margin-bottom: 2rem; }
+      .btn-group { display: flex; gap: 1rem; }
+      button {
+        padding: 1rem 2rem; font-size: 1.2rem; cursor: pointer;
+        background: #444; color: white; border: 2px solid #666; transition: 0.2s;
+      }
+      button:hover { background: #666; border-color: #fff; }
+
+      #hud {
+        position: absolute; top: 0; left: 0; width: 100%; padding: 20px;
+        display: none; justify-content: space-between; align-items: flex-start;
+        color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+      }
+      #problem-container {
+        position: absolute; top: 20px; left: 50%; transform: translateX(-50%);
+        background: rgba(0,0,0,0.5); padding: 10px 30px; border-radius: 10px;
+        font-size: 2rem; font-weight: bold;
+      }
+      #stats { background: rgba(0,0,0,0.5); padding: 10px 20px; border-radius: 10px; text-align: right; }
+
+      #crosshair {
+        position: absolute; top: 50%; left: 50%;
+        width: 20px; height: 20px; transform: translate(-50%, -50%);
+        pointer-events: none;
+      }
+      #crosshair::before, #crosshair::after {
+        content: ''; position: absolute; background: white;
+      }
+      #crosshair::before { width: 100%; height: 2px; top: 9px; left: 0; }
+      #crosshair::after { height: 100%; width: 2px; left: 9px; top: 0; }
+
+      #msg {
+        position: absolute; bottom: 50px; left: 50%; transform: translateX(-50%);
+        font-size: 1.5rem; color: #0f0; display: none;
+      }
+    </style>
+    <script type="module" crossorigin src="/assets/index-BPraM57Z.js"></script>
+  </head>
+  <body>
+    <div id="ui-layer">
+      <div id="menu">
+        <h1>Math FPS</h1>
+        <p>Select Operation to Start</p>
+        <div class="btn-group">
+          <button onclick="startGame('add')">Addition (+)</button>
+          <button onclick="startGame('sub')">Subtraction (-)</button>
+          <button onclick="startGame('mul')">Multiplication (×)</button>
+          <button onclick="startGame('div')">Division (÷)</button>
+        </div>
+        <p style="margin-top: 2rem; color: #aaa;">WASD to Move | Mouse to Look | Click to Shoot</p>
+      </div>
+
+      <div id="hud">
+        <div id="problem-container">
+          <span id="question">? + ?</span>
+        </div>
+        <div id="stats">
+          <div>Score: <span id="score">0</span></div>
+          <div>High Score: <span id="high-score">0</span></div>
+          <div>Level: <span id="level">1</span></div>
+        </div>
+      </div>
+
+      <div id="crosshair"></div>
+      <div id="msg">Correct!</div>
+    </div>
+    
+  </body>
+</html>
