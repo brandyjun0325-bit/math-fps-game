@@ -82,6 +82,12 @@
       transform: translateY(0);
     }
 
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
     #hud {
       position: absolute;
       top: 0;
@@ -178,6 +184,28 @@
       color: #888;
       font-size: 0.9rem;
     }
+
+    #loading-status {
+      color: #ff0;
+      font-size: 1rem;
+      margin-top: 1rem;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.5;
+      }
+    }
+
+    .loading {
+      animation: pulse 1s infinite;
+    }
   </style>
   <script type="module" crossorigin src="./assets/index-CpykVxSl.js"></script>
 </head>
@@ -188,11 +216,12 @@
       <h1>MATH FPS</h1>
       <p>연산을 선택하여 보스를 물리치세요!</p>
       <div class="btn-group">
-        <button onclick="startGame('add')">덧셈 (+)</button>
-        <button onclick="startGame('sub')">뺄셈 (-)</button>
-        <button onclick="startGame('mul')">곱셈 (×)</button>
-        <button onclick="startGame('div')">나눗셈 (÷)</button>
+        <button id="btn-add" onclick="startGame('add')" disabled>덧셈 (+)</button>
+        <button id="btn-sub" onclick="startGame('sub')" disabled>뺄셈 (-)</button>
+        <button id="btn-mul" onclick="startGame('mul')" disabled>곱셈 (×)</button>
+        <button id="btn-div" onclick="startGame('div')" disabled>나눗셈 (÷)</button>
       </div>
+      <div id="loading-status" class="loading">게임 로딩 중...</div>
       <div class="controls-hint">
         WASD: 이동 | 마우스: 조준 | 클릭: 발사
       </div>
@@ -229,17 +258,31 @@
       `;
     }
 
-    // Fallback in case module hasn't exposed startGame yet
+    // startGame function
     function startGame(op) {
       if (window.runGame) {
         window.runGame(op);
       } else {
-        console.error("Game is still loading...");
-        if (window.location.protocol !== 'file:') {
-          alert("게임 로딩 중입니다. 잠시 후 다시 시도해 주세요.");
-        }
+        console.error("Game module not loaded yet.");
       }
     }
+
+    // Wait for game module to be ready
+    function checkGameReady() {
+      if (window.runGame) {
+        // Enable buttons
+        document.getElementById('btn-add').disabled = false;
+        document.getElementById('btn-sub').disabled = false;
+        document.getElementById('btn-mul').disabled = false;
+        document.getElementById('btn-div').disabled = false;
+        document.getElementById('loading-status').textContent = '준비 완료! 연산을 선택하세요.';
+        document.getElementById('loading-status').classList.remove('loading');
+        document.getElementById('loading-status').style.color = '#0f0';
+      } else {
+        setTimeout(checkGameReady, 100);
+      }
+    }
+    checkGameReady();
   </script>
 </body>
 
