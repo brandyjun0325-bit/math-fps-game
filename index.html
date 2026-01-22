@@ -1,86 +1,246 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Math FPS - Intelligent Shooting Game</title>
-    <style>
-      body { margin: 0; overflow: hidden; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-      #ui-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
-      
-      #menu {
-        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-        background: rgba(0,0,0,0.8); display: flex; flex-direction: column;
-        justify-content: center; align-items: center; pointer-events: auto;
-        color: white; z-index: 10;
-      }
-      #menu h1 { font-size: 3rem; margin-bottom: 2rem; }
-      .btn-group { display: flex; gap: 1rem; }
-      button {
-        padding: 1rem 2rem; font-size: 1.2rem; cursor: pointer;
-        background: #444; color: white; border: 2px solid #666; transition: 0.2s;
-      }
-      button:hover { background: #666; border-color: #fff; }
+<html lang="ko">
 
-      #hud {
-        position: absolute; top: 0; left: 0; width: 100%; padding: 20px;
-        display: none; justify-content: space-between; align-items: flex-start;
-        color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-      }
-      #problem-container {
-        position: absolute; top: 20px; left: 50%; transform: translateX(-50%);
-        background: rgba(0,0,0,0.5); padding: 10px 30px; border-radius: 10px;
-        font-size: 2rem; font-weight: bold;
-      }
-      #stats { background: rgba(0,0,0,0.5); padding: 10px 20px; border-radius: 10px; text-align: right; }
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>지능형 수학 슈팅 게임 - Math FPS</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      font-family: 'Pretendard', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #000;
+    }
 
-      #crosshair {
-        position: absolute; top: 50%; left: 50%;
-        width: 20px; height: 20px; transform: translate(-50%, -50%);
-        pointer-events: none;
-      }
-      #crosshair::before, #crosshair::after {
-        content: ''; position: absolute; background: white;
-      }
-      #crosshair::before { width: 100%; height: 2px; top: 9px; left: 0; }
-      #crosshair::after { height: 100%; width: 2px; left: 9px; top: 0; }
+    #ui-layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
 
-      #msg {
-        position: absolute; bottom: 50px; left: 50%; transform: translateX(-50%);
-        font-size: 1.5rem; color: #0f0; display: none;
-      }
-    </style>
-    <script type="module" crossorigin src="/assets/index-BPraM57Z.js"></script>
-  </head>
-  <body>
-    <div id="ui-layer">
-      <div id="menu">
-        <h1>Math FPS</h1>
-        <p>Select Operation to Start</p>
-        <div class="btn-group">
-          <button onclick="startGame('add')">Addition (+)</button>
-          <button onclick="startGame('sub')">Subtraction (-)</button>
-          <button onclick="startGame('mul')">Multiplication (×)</button>
-          <button onclick="startGame('div')">Division (÷)</button>
-        </div>
-        <p style="margin-top: 2rem; color: #aaa;">WASD to Move | Mouse to Look | Click to Shoot</p>
+    #menu {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      pointer-events: auto;
+      color: white;
+      z-index: 10;
+      text-align: center;
+    }
+
+    #menu h1 {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+      color: #44aaff;
+      text-shadow: 0 0 20px rgba(68, 170, 255, 0.5);
+    }
+
+    #menu p {
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+      color: #ccc;
+    }
+
+    .btn-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      max-width: 600px;
+    }
+
+    button {
+      padding: 1.5rem 2rem;
+      font-size: 1.5rem;
+      cursor: pointer;
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      transition: all 0.3s;
+      border-radius: 12px;
+      backdrop-filter: blur(5px);
+    }
+
+    button:hover {
+      background: rgba(68, 170, 255, 0.3);
+      border-color: #44aaff;
+      transform: translateY(-5px);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    #hud {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 20px;
+      display: none;
+      justify-content: space-between;
+      align-items: flex-start;
+      color: white;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+      box-sizing: border-box;
+    }
+
+    #problem-container {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.6);
+      padding: 15px 40px;
+      border-radius: 50px;
+      font-size: 2.5rem;
+      font-weight: bold;
+      border: 2px solid #44aaff;
+      box-shadow: 0 0 15px rgba(68, 170, 255, 0.3);
+    }
+
+    #stats {
+      background: rgba(0, 0, 0, 0.6);
+      padding: 15px 25px;
+      border-radius: 15px;
+      text-align: right;
+      border-left: 4px solid #44aaff;
+    }
+
+    #stats div {
+      margin-bottom: 5px;
+      font-size: 1.1rem;
+    }
+
+    #stats span {
+      color: #44aaff;
+      font-weight: bold;
+    }
+
+    #crosshair {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 24px;
+      height: 24px;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    #crosshair::before,
+    #crosshair::after {
+      content: '';
+      position: absolute;
+      background: cyan;
+      box-shadow: 0 0 5px cyan;
+    }
+
+    #crosshair::before {
+      width: 100%;
+      height: 2px;
+      top: 11px;
+      left: 0;
+    }
+
+    #crosshair::after {
+      height: 100%;
+      width: 2px;
+      left: 11px;
+      top: 0;
+    }
+
+    #msg {
+      position: absolute;
+      top: 60%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 4rem;
+      font-weight: 900;
+      color: #0f0;
+      display: none;
+      text-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+      z-index: 5;
+    }
+
+    .controls-hint {
+      margin-top: 3rem;
+      color: #888;
+      font-size: 0.9rem;
+    }
+  </style>
+  <script type="module" crossorigin src="/assets/index-CpykVxSl.js"></script>
+</head>
+
+<body>
+  <div id="ui-layer">
+    <div id="menu">
+      <h1>MATH FPS</h1>
+      <p>연산을 선택하여 보스를 물리치세요!</p>
+      <div class="btn-group">
+        <button onclick="startGame('add')">덧셈 (+)</button>
+        <button onclick="startGame('sub')">뺄셈 (-)</button>
+        <button onclick="startGame('mul')">곱셈 (×)</button>
+        <button onclick="startGame('div')">나눗셈 (÷)</button>
       </div>
-
-      <div id="hud">
-        <div id="problem-container">
-          <span id="question">? + ?</span>
-        </div>
-        <div id="stats">
-          <div>Score: <span id="score">0</span></div>
-          <div>High Score: <span id="high-score">0</span></div>
-          <div>Level: <span id="level">1</span></div>
-        </div>
+      <div class="controls-hint">
+        WASD: 이동 | 마우스: 조준 | 클릭: 발사
       </div>
-
-      <div id="crosshair"></div>
-      <div id="msg">Correct!</div>
     </div>
-    
-  </body>
+
+    <div id="hud">
+      <div id="problem-container">
+        <span id="question">준비 중...</span>
+      </div>
+      <div id="stats">
+        <div>점수: <span id="score">0</span></div>
+        <div>최고 점수: <span id="high-score">0</span></div>
+        <div>레벨: <span id="level">1</span></div>
+      </div>
+    </div>
+
+    <div id="crosshair"></div>
+    <div id="msg">정답!</div>
+  </div>
+
+  <script>
+    // Check if running via file:// protocol
+    if (window.location.protocol === 'file:') {
+      const menu = document.getElementById('menu');
+      menu.innerHTML = `
+        <h1 style="color: #ff4444;">실행 오류</h1>
+        <p style="color: white; max-width: 600px; line-height: 1.6;">
+          웹 브라우저 보안 정책상 파일을 직접 열어서는 게임을 실행할 수 없습니다.<br><br>
+          아래 단계를 따라주세요:<br>
+          1. 터미널에서 <code>npm run dev</code> 를 입력하세요.<br>
+          2. 표시된 주소(예: <code>http://localhost:5173</code>)를 클릭하세요.
+        </p>
+        <button onclick="window.location.reload()" style="margin-top: 20px;">다시 시도</button>
+      `;
+    }
+
+    // Fallback in case module hasn't exposed startGame yet
+    function startGame(op) {
+      if (window.runGame) {
+        window.runGame(op);
+      } else {
+        console.error("Game is still loading...");
+        if (window.location.protocol !== 'file:') {
+          alert("게임 로딩 중입니다. 잠시 후 다시 시도해 주세요.");
+        }
+      }
+    }
+  </script>
+</body>
+
 </html>
